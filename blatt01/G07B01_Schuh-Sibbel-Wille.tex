@@ -1,149 +1,98 @@
 \documentclass[ngerman]{gdb-aufgabenblatt}
 
-
+\usepackage[latin9]{inputenc}
 \renewcommand{\Aufgabenblatt}{1}
 \renewcommand{\Ausgabedatum}{Mi. 15.10.2014}
-\renewcommand{\Abgabedatum}{Do. 31.10.2014}
-\renewcommand{\Gruppe}{Müller, Meyer, Schulze}
-
+\renewcommand{\Abgabedatum}{Fr. 31.10.2014}
+\renewcommand{\Gruppe}{Schuh, Sibbel, Wille}
+\usepackage[T1]{fontenc}
 
 \begin{document}
 
 
-\section{Beispiel für ER-Diagramm}
+\section{Informationssysteme}
+\begin{itemize}
+	\item[a)] \textbf{Charakterisierung:}\\
+		Laut Skript:  Ein Informationssystem (IS) besteht aus Menschen und Maschinen, die Informationen erzeugen und/oder benutzen und die durch Kommunikationsbeziehungen miteinander verbunden sind. \\
+		\\
+Aufgaben eines rechnergestützten Informationssystemes:
+		\begin{itemize}
+		\item Erfassung von Daten
+		\item Speicherung von Daten
+		\item Bearbeitung von Daten
+		\end{itemize}
+\item[b)] \textbf{logische Datenunabhängigkeit} beschreibt die Kapselung der Daten von der Anwendung. Das heisst, wenn die Struktur der Daten verändert wird, funktioniert das Programm weiterhin und umgekehrt.\\
+\textbf{logische Datenunabhängigkeit} besagt, dass die logischen Daten, wie sie der Benutzer sieht, von den physischen Daten auf der Festplatte getrennt sind. Somit können Daten auf der Festplatte reorganisiert werden, ohne das der Benutzer davon etwas merkt.
+\item[c)] \textbf{Beispiele:}\\
+\begin{itemize}
+\item \textbf{Krankenhaus:} \\
+Im Krankenhaus werden täglich sehr viele Daten vorallem von Patienten erfasst, bearbeitet und gespeichert. Es werden Daten aus anderen Systemen, wie zum Beispiel der Krankenkasse bezogen und dort hin versand. Die Konsistenz dieser Daten ist von besonderer Bedeutung, da im Zweifelsfall Leben davon abhängen. Typische Vorgänge sind  das Aufnehmen von neuen Partienten, Zuordnung von Ärzten und Zimmern und Vergabe von Terminen bei verschiedenen Abteilungen. 
+\item \textbf{Börse:}
+An der Börse müssen im Millisekundentakt Transaktionen durchgeführt werden, die alle eindeutig zu einem Zeitpunkt zugeordnet werden müssen, da sich die Kurse blitzschnell ändern können. Es werden Aktien gekauft und verkauft, dabei muss immer der aktuelle Kurs beachtet werden 
+\item \textbf{Verbrecherdatenbank:}
+Schneller Zugriff auf frühere Fälle ermöglicht Mustererkennung und damit möglicherweise schnellere Aufklärung von Verbrechen. Ermöglicht Identifikation durch biometrische Erkennung. Katalogisierung von Beweismitteln.
+\end{itemize}
+\end{itemize}
 
-\begin{center}
-\begin{tikzpicture}
+\section{Miniwelt}
+\begin{itemize}
+\item[a)] \textbf{Elemente} : 
+\begin{itemize}
+\item \textbf{Mitspieler}: Name, E-Mail Adresse
+\item \textbf{Gemeinschaft}: Gründer, Mitspieler, Wettbewerbe
+\item \textbf{Wettbewerbe}: Begegnungen,
+\item \textbf{Begegnungen}: Ergebnisse, Tipps
+\item \textbf{Tipp}: Mitspieler, Wette
+\end{itemize} 
+\textbf{Vorgänge:}
+\begin{itemize}
+\item neuen Spieler Anmelden 
+\item Gemeinschaft erstellen 
+\item Mitglied zur Gemeinschaft hinzufügen/entfernen 
+\item Begegnungen hinzufügen
+\item Ergebnisse eintragen
+\item Tipp abgeben
+\item Punktestand abfragen
+\item Ergebnisse abfragen
+\item Punkte berechnen
+\end{itemize}
 
-\node[entity] (e1) {E1};
-\node[attribut] (e1-a1) [above left =5mm and 4mm of e1.north] {\underline{A1}} edge (e1);
-\node[attribut] (e1-a2)  [above right=5mm and 4mm of e1.north] {A2} edge (e1);
-\node[multivalentattribut] (e1-a3)  [right=5mm of e1] {A3} edge (e1);
+\item[b)]
+\begin{itemize}
+\item[] \textbf{Kontrolle über die operationalen Daten:}\\
+In der Tippspiel Anwendung sollen die Spieler auf Begegnungen tippen können. Danach sollen alle bisherigen Ergebnisse und die Punktzahlen angezeigt werden. Zu Beginn muss der Gründer einer Tippgemeinschafft die Mitspieler einladen, die Begegnungen erstellen und später die Ergebnisse dieser eintragen können.
 
-\node[entity] (e2) [below left =1cm and 1mm of e1.south] {E1} edge [erbt] (e1);
-\node[entity] (e3)      [below right=1cm and 1mm of e1.south] {E3} edge [erbt] (e1);
-\node[entity] (e4) [right =7cm of e3] {E4};
+\item[] \textbf{Leichte Handhabbarkeit der Daten:}\\
+Durch eine Sinnvolle Strukturierung der Daten, können simplere Abrufe ermöglicht werden. Weiterhin sollen Daten nur einmal gespeichert werden. So kann z.B. die Gesamtpunktzahl eines Spielers aus den Punkten der Begegnungen berechnet werden,
+\item[] \textbf{Kontrolle der Datenintegrität:}\\
+Es müssen Zugriffsrechte beachtet werden, da nur der Gründer der Gemeinschaft administrieren können sollte. So darf als Beispiel nur er Ergebnisse eintragen. 
+\item[] \textbf{Leistung und Skalierbarkeit:}\\
+Das System muss so entworfen sein, dass hohe Zugriffszahlen keine hohen Zugriffszeiten erzeugen und erst recht nicht zu Verlust von Daten führen.
+\item[] \textbf{Hoher Grad an Daten-Unabhängigkeit:}\\
+Durch kleine Änderungen an der Datenbank oder der Anwendung soll keine Inkonsistenz entstehen und das jeweils andere unverändert weiterbenutzbar bleiben.
+\end{itemize}
+\end{itemize}
 
-\node[weakentity] (e5) [below =3cm of e3] {E5};
-\node[attribut] (e5-a1)  [right=5mm of e5] {\dashuline{A1}} edge (e5);
-
-\node[relationship] (r1) [right=2cm of e3] {R1};
-\path (r1) edge node[at end,anchor=north west] {$[0;2]$} (e3);
-\path (r1) edge node[at end,anchor=north east] {$[7;9]$} (e4);
-
-
-\node[weakrelationship] (r2) [below=1cm of e3] {R2};
-\path (r2) edge node[at end,anchor=north west] {$1$} (e3);
-\draw[double distance=2pt] (r2) -- node[at end,anchor=south east] {$8$} (e5);
-
-
-
-\end{tikzpicture}
-\end{center}
-
-
-
-
-
-
-\section{Beispiel für relationales Datenbankschema}
-
-\begin{RMSchma}
-Person(\soliduline{PID}, Name, Vorname)
-
-Haustier(\soliduline{HID}, Name, Rasse, \dashuline{Herrchen $\rightarrow$ Person.PID})
-\end{RMSchma}
-
-
-
-
-
-
-\section{Beispiel für Ausdruck der Relationenalgebra}
-
-\begin{align*}
- &\projektion{Rasse, Geschlecht}((Wolf\verbund{Wolf.WID=Haustier.HID} (\selektion{Name=\wert{Hasso}}Haustiere)) \natverbund Person)
-\\  &=\{ \wert{Steppenwolf}, \wert{m} \}
-\end{align*}
-
-
-
-
-\newpage
-\section{Beispiel für SQL-Anfrage}
-
-\begin{verbatim}
-SELECT 
-  h.Name,
-  h.Rasse
-FROM 
-  Haustier h,
-  Person p
-WHERE
-  h.Herrchen = p.PID AND
-  p.Vorname LIKE "P%"
-\end{verbatim}
+\section{Transaktionen}
+Bei \textbf{Zeitpunkt A} wird von dem Konto mit der ID=5 1000 Geldeinheiten abgezogen, jedoch nicht auf das Empfängerkonto eingezahlt. Somit sind die Daten inkonsistent. \\
+Bei \textbf{Zeitpunkt B} bleiben die Daten konsistent, das Geld wird sauber übertragen, jedoch wird nach der Transaktion nur das Empfängerkonto und nicht das Senderkonto angezeigt.\\
 
 
 
+\section{Warm-Up MySQL}
+\begin{itemize}
+\item[a)] \texttt{CREATE TABLE gdb\_gruppe052.user (...);} erstellt eine neue Tabelle \texttt{user} in der Datenbank \texttt{gdb\_gruppe052} mit den Spalten \texttt{id}, \texttt{name} und \texttt{passwort}. 
 
+Mit dem Befehl \texttt{INSERT INTO gdb\_gruppe052.user (...) VALUES (...);} wird in die eben erstellte Tabelle ein Benutzer mit \texttt{id=1}, \texttt{name=``gdbNutzer''} und \texttt{passwort=``geheim''} eingefügt.
 
+\item[b)]
+Mit \texttt{SELECT * FROM gdb\_gruppe052.user WHERE name = '"gdbNutzer"';} wird der in a) hinzugefügte Benutzer abgefragt.
 
+Mit \texttt{DROP TABLE gdb\_gruppe052.user;} wird die in a) erstellte Tabelle wieder gelöscht.
 
-
-\section{Beispiel für Operatorbaum}
-
-\begin{tikzpicture}
-\node (Haustier) {Haustier};
-\node (Wolf) [left=25mm of Haustier] {Wolf};
-\node (join1) [above=20mm of $(Haustier)!.5!(Wolf)$] {$\verbund{Wolf.WID=Haustier.HID}$};
-\node (selektion1) [above=of join1] {$\selektion{Name=\wert{Hasso}}$};
-\node (projektion) [above=of selektion1] {$\projektion{Rasse}$};
-\node (final) [above=of projektion] {};
-
-\path (Haustier) edge node[smallr,near start,above right] {?? Tupel\\?? Attribute} (join1);
-\path (Wolf) edge node[smalll,near start,above left] {?? Tupel\\?? Attribute} (join1);
-\path (join1) edge node[smallr,near start,above left] {?? Tupel\\?? Attribute} (selektion1);
-\path (selektion1) edge node[smallr,midway,left] {$??\cdot\frac{??}{??}=??$ Tupel\\?? Attribute} (projektion);
-\path (projektion) edge node[smallr,midway,left] {$??$ Tupel\\1 Attribut} (final);
-\end{tikzpicture}
-
-
-
-
-
-
-
-\section{Beispiel für Tabelle mit Sperranforderungen}
-
-\begin{tabular}{|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{1cm}|p{1cm}|p{1cm}|p{3cm}|}
-\hline
-Zeitschritt & T\ts{1} & T\ts{2} & T\ts{3} & x & y & z & Bemerkung\\
-\hline
-\hline
-0 &  &  &  & NL & NL & NL & \\
-\hline
-1 & lock(x,X) &  &  & X\ts{1} & NL & NL & \\
-\hline
-2 & write(x) & lock(y,R) &  & X\ts{1} & R\ts{2} & NL & \\
-\hline
-3 &  &  &  &  &  &  & \\
-\hline
-4 &  &  &  &  &  &  & \\
-\hline
-5 &  &  &  &  &  &  & \\
-\hline
-\end{tabular}
-
-
-
-\section{*Thema*}
-
-*Lösung*
-
-
-
-
-
+\item[c)]
+Die Drei-Schichten-Architektur nach ANSI-SPARC beschreibt grob, wie Datenbanksysteme einzusetzen sind. Es beschreibt die Externe, Konzeptionelle und die interne Schicht. Die externe beschreibt die Benutzer und die abzubildende Welt, die konzeptionelle die Umsetzung in als Tabellen und die interne das zugrunde liegende Datenbanksystem. \\
+Die skizzierte Architekturübersicht zeigt eine konkrete Umsetzung eines MySQL Servers. Sie zeigt verschiedene Komponenten, die zusammen den SQL Server bilden. Im Bezug auf die Drei-Schichten-Architektur bildet die Übersicht nur einen Teil der inneren Schicht ab.
+\end{itemize}
 
 \end{document}
