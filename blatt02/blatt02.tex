@@ -120,6 +120,58 @@ Modell}
 \end{tikzpicture}
 \end{center}
 
+\section{Informationsmodellierung: Beschreibung von ER-Modellen}
+
+\begin{enumerate}
+\item
+\begin{enumerate}
+\item 
+\begin{itemize}
+\item Zuhörer und Erzähler sind Personen mit einem eindeutigen Vor- und Nachnamen.
+\item Ein Zuhörer kann beliebig vielen Erzählern zuhören.
+\item Ein Erzähler muss mindestens einem Zuhörer einen oder mehrere Witze erzählen.
+\item Ein Witz enthält eine Pointe, die aber nur vermittelt werden kann, wenn ein Witz erzählt wird.
+
+\end{itemize}
+\item
+\begin{itemize}
+\item Minimal kann ein Erzähler einem Zuhörer keinmal einen WItz erzählen.
+\item Maximal kann ein Erzähler einem Zühörer uendliche viele Witze erzählen bwz. so viele wie er kennt.
+\end{itemize}
+\item
+\begin{itemize}
+\item Durch die abgebildete Erweiterung lässt sich darstellen welchen eindeutigen Namen der Witz hat und welchen Inhalt dieser hat.
+\item Der Witz kann beliebig oft erzählt werden.
+\item Ein Erzähler kann beliebig viele Witze mit verschiedenen Inhalten erzählen.
+\end{itemize}
+\end{enumerate}
+\item
+\begin{itemize}
+\item Eine Straße hat einen eindeutigen Namen.
+\item In der Staße können beliebig vile Häuser stehen, jedes Haus jedoch nur in einer Straße und auch nur wenn eine Straße gibt.
+\item Jedes Haus hat eine Hausnummer, die sich von anderen Hausnummern in der gleichen Straße unterscheidet.
+\end{itemize}
+\end{enumerate}
+
+\section{Schlüsselkandidaten}
+\begin{enumerate}
+\item
+Zur Erläuterung von Eindeutigkeit und Minimalität: wenn beispielweise zum Geburtsdatum ein weiteres Attribut als Schlüsselkandidat gewählt wird, ist mit Wegfallen des anderen Attributs die Bedingungen der Minimalität verletzt, da der Schlüssel immer noch eindeutig ist, oder durch Wegfallen des Geburtsdatum der Schlüssel nicht mehr eindeutig bzw. der zuerst genannte Fall zutrifft.\\
+Mögliche Schlüsselkandidaten:
+\begin{itemize}
+\item Vorname
+\item Geburtsdatum
+\item Telefonnr.
+\end{itemize}
+Diese drei Attribute sind einzelnd als Schlüssel im Bezug auf die Tabelle eindeutig und minimal. Alle anderen Attribute sind nicht eindeutig und Attributkombinationen sind in dem Kontext nicht minimal. \\
+Die Attributkombination (Vorname, Nachname) ist kein Schlüsselkandidat, da durch wegfallen des Nachnamens des Schlüssel immer noch eindeutig ist und die Kombination somit nicht minimal ist.\\
+
+\item
+Es gestaltet sich schwierig, da gerade Attribute wie Namen und Geburtsdaten gleich sein können. Selbst Telefonnummern können sich bei Wohngemeinschaften und Familien überschneiden. Um tatsächlich eindeutige Schlüssel unter den bereits vorhandenen Attributen zu finden, muss man längere Schlüsselkombinationen nutzen. Mögliche Kombination hier für ist (Vorname, Nachname, Geburtsdatum, Geburtsort). Es ist höchst unwahrscheinlich, dass zwei Personen mit selben Namen am selben Tag Geburtstag haben und am selben Ort geboren wurden.\\
+Die einfachste eindeutige Lösung wäre eine Matrikelnummer einzuführen, die jedem Studenten bei der Immatrikulation von der Universität zugewiesen wird.\\
+
+\end{enumerate}
+
 %
 %
 %
