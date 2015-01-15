@@ -1,0 +1,292 @@
+\documentclass[ngerman]{gdb-aufgabenblatt}
+
+\usepackage{graphicx}
+\usepackage{minted}
+\renewcommand{\Aufgabenblatt}{4}
+\renewcommand{\Ausgabedatum}{Mi. 3.12.2014}
+\renewcommand{\Abgabedatum}{Fr. 12.12.2014}
+\renewcommand{\Gruppe}{Schuh, Sibbel, Wille}
+
+\usemintedstyle{tango}
+
+\begin{document}
+
+\section{Relationenalgebra}
+%\begin{align*}
+%&\projektion{Titel}(\selektion{Seitenzahl>200 \land Erscheinungsjahr>1950})\\
+%&=\{Schall und Wahn, Der Fremde\}
+%\end{align*}
+%\begin{align*}
+%&\projektion{Vorname, Nachname} \left( \selektion{Buch=Der Talisman}\left( Person\verbund{Person.PID=Schreibt.Autor}Schreibt \right) \right)\\
+%&=\{  \}
+%\end{align*}
+\begin{enumerate}
+\item
+\begin{align*}
+&\projektion{Jahresgehalt}\left( \selektion{Geburtsdatum >= '1980-01-01'}\left(Person \verbund{PNR=Bewerber} Bewerbung \verbund{Job=JNR} Job\right)\right)
+\end{align*}
+\item
+\begin{align*}
+&\projektion{Titel, Jahresgehalt}\left(Job \verbund{Job=JNR} Bewerbung \verbund{PNR=Bewerber} \left(\selektion{Heimat.Name = Schweiz}\left(Person\right)\right) \right)
+\end{align*}
+\item
+\begin{align*}
+&\projektion{Vorname, Nachname}\left( Person - \left( Person \verbund{Bewerber = PNR} Bewerbung \right) \right)
+\end{align*}
+\item
+Das Geburtsdatum aller Personen, die entweder sich bereits beworben haben und alle Sachbearbeiter von einer Bewerbung, die nach dem 31.12.1994 geboren wurden.
+\end{enumerate}
+\section{Schemadefinition}
+\begin{enumerate}
+\item
+\begin{minted}{sql}
+CREATE TABLE Buch (
+	Titel                      varchar(50)  PRIMARY KEY,
+	Erscheinungsjahr           date         NOT NULL,
+	Seitenzahl                 int          NOT NULL and CHECK(0<=Seitenzahl<=4000),
+	Verlag                     VARCHAR(50)  NOT NULL,
+);
+
+CREATE TABLE Person (
+PID          		  int                PRIMARY KEY,
+Vorname	     	   VARCHAR(50)        NOT NULL,
+Nachname       		VARCHAR(50)        NOT NULL and UNIQUE,
+CONSTRAINT Lieblingsbuch FOREIGN KEY (Lieblingsbuch) REFERENCES Buch (TITEL)
+);
+
+CREATE TABLE Schreibt (
+CONSTRAINT Autor PRIMARY KEY, FOREIGN KEY (Person) REFERENCES Person(PID)
+CONSTRAINT Buch PRIMARY KEY, FOREIGN KEY (Buch) REFERENCES Buch(Titel)
+);
+
+CREATE TABLE Begutachtet (
+CONSTRAINT Lektor PRIMARY KEY, FOREIGN KEY (Person) REFERENCES Person(PID)
+CONSTRAINT Buch PRIMARY KEY, FOREIGN KEY (Buch) REFERENCES Buch (Titel)
+);
+\end{minted}
+\item
+Bei der Definition ist zu beachten, dass keine Fremdschl\"ussel auf keine (noch) nicht existierende Tabellen zeigen. Diese Tabellen m\"ussen zuerst erstellt werden und dann die Tabellen um die Fremdschl\"ussel erweitern. Die Transaktionen m\"ussen so definiert sein, dass die Integrit\"ats Bedingungen nach jedem Teilschritt stimmen und nicht erst am Ende der Transaktion.
+\item
+\begin{minted}{sql}
+CREATE TABLE Begutachtet (
+  Buch varchar(100) NOT NULL,
+  Lektor int(11) NOT NULL,
+  KEY Buch (Buch),
+  KEY Lektor (Lektor)
+);
+
+INSERT INTO Begutachtet VALUES
+('Anna Karenina', 2),
+('Schuld und Sühne', 1),
+('Requiem für einen Traum', 8),
+('Requiem für einen Traum', 6),
+('Der Fremde', 5),
+('Als ich im Sterben lag', 4),
+('Krieg und Frieden', 2),
+('Hundert Jahre Einsamkeit', 7);
+
+CREATE TABLE Buch (
+  Titel varchar(100) NOT NULL,
+  Erscheinungsjahr int(11) NOT NULL,
+  Seitenzahl int(11) NOT NULL,
+  Verlag varchar(100) NOT NULL,
+  PRIMARY KEY (Titel)
+);
+
+INSERT INTO Buch VALUES
+('Als ich im Sterben lag', 1930, 173, 'Diogenes'),
+('Anna Karenina', 1878, 991, 'Anaconda'),
+('Der Fremde', 1942, 160, 'rororo'),
+('Der Talisman', 1984, 714, 'Heyne'),
+('Hundert Jahre Einsamkeit', 1967, 480, 'Fischer'),
+('Krieg und Frieden', 1869, 1536, 'Anaconda'),
+('Requiem für einen Traum', 1978, 316, 'Rowohlt'),
+('Schall und Wahn', 1929, 304, 'Diogenes'),
+('Schuld und Sühne', 1866, 752, 'DTV');
+
+CREATE TABLE Person (
+  PID int(11) NOT NULL,
+  Vorname varchar(100) NOT NULL,
+  Nachname varchar(100) NOT NULL,
+  Lieblingsbuch varchar(100) NOT NULL,
+  PRIMARY KEY (PID),
+  KEY Lieblingsbuch (Lieblingsbuch)
+);
+
+INSERT INTO Person VALUES
+(1, 'Leo', 'Tolstoi', 'Schuld und Sühne'),
+(2, 'Fjodor', 'Dostojewski', 'Krieg und Frieden'),
+(3, 'Hubert', 'Selby', 'Der Fremde'),
+(4, 'Albert', 'Camus', 'Schuld und Sühne'),
+(5, 'William', 'Faulkner', 'Schuld und Sühne'),
+(6, 'Stephen', 'King', 'Hundert Jahre Einsamkeit'),
+(7, 'Peter', 'Straub', 'Schall und Wahn'),
+(8, 'Gabriel', 'Garcia Marquez', 'Requiem für einen Traum');
+
+CREATE TABLE Schreibt (
+  Autor int(11) NOT NULL,
+  Buch varchar(100) NOT NULL,
+  KEY fk_Autor (Autor),
+  KEY fk_Buch (Buch)
+);
+
+INSERT INTO Schreibt VALUES
+(1, 'Krieg und Frieden'),
+(1, 'Anna Karenina'),
+(2, 'Schuld und Sühne'),
+(3, 'Requiem für einen Traum'),
+(4, 'Der Fremde'),
+(5, 'Schall und Wahn'),
+(5, 'Als ich im Sterben lag'),
+(6, 'Der Talisman'),
+(7, 'Der Talisman'),
+(8, 'Hundert Jahre Einsamkeit');
+
+
+ALTER TABLE Begutachtet
+  ADD CONSTRAINT Buch FOREIGN KEY (Buch) REFERENCES Buch (Titel),
+  ADD CONSTRAINT Lektor FOREIGN KEY (Lektor) REFERENCES Person (PID);
+
+ALTER TABLE Person
+  ADD CONSTRAINT Lieblingsbuch FOREIGN KEY (Lieblingsbuch) REFERENCES Buch (Titel);
+
+ALTER TABLE Schreibt
+  ADD CONSTRAINT fk_Autor FOREIGN KEY (Autor) REFERENCES Person (PID),
+  ADD CONSTRAINT fk_Buch FOREIGN KEY (Buch) REFERENCES Buch (Titel);
+
+\end{minted}
+\item
+\begin{minted}{sql}
+DELETE FROM 
+  Person
+WHERE
+  Vorname = 'Peter';
+\end{minted}
+\begin{minted}{sql}
+DROP TABLE Begutachtet;
+DROP TABLE Schreibt;
+DROP TABLE Person;
+DROP TABLE Buch;
+\end{minted}
+\end{enumerate}
+\section{SQL}
+\begin{enumerate}
+\item
+\begin{minted}{sql}
+SELECT COUNT(PNR),Nachname, PNR 
+FROM Person P, Bewerbung B
+WHERE P.PNR = B.Sachbearbeiter
+GROUP BY PNR
+\end{minted}
+\item
+\begin{minted}{sql}
+SELECT PNR 
+from Person P, Bewerbung B
+WHERE P.PNR = B.Sachbearbeiter
+GROUP BY PNR
+HAVING COUNT(PNR)>2
+\end{minted}
+\item2
+\begin{minted}{sql}
+SELECT Vorname
+from Person P, Bewerbung B
+WHERE 
+	any (SELECT Nachname 
+	FROM Person P, Bewerbung B
+    WHERE P.PNR = B.Bewerber)
+    =
+    ANY (SELECT Nachname 
+	FROM Person P, Bewerbung B
+    WHERE P.PNR = B.Sachbearbeiter)
+GROUP BY PNR
+\end{minted}
+\item
+\begin{minted}{sql}
+SELECT DISTINCT PNR, Vorname, Nachname
+FROM Person P, Bewerbung B
+WHERE PNR NOT IN 
+(select PNR FROM Bewerbung B WHERE B.Sachbearbeiter = P.PNR)
+\end{minted}
+\end{enumerate}
+\section{Optimierung}
+\begin{enumerate}
+\item[ ]a) \\
+\begin{tikzpicture}
+\node (Person) {Person};
+\node (Bewerbung) [right=10mm of Person] {Bewerbung};
+\node (konka1) [above=20mm of $(Person)!.5!(Bewerbung)$] {x};
+\path (Person) edge node[smallr,midway,left] {} (konka1);
+\path (Bewerbung) edge node[smallr,midway,left] {} (konka1);
+\node (Job) [right=20mm of konka1] {Job};
+\node (konka2) [above=20mm of $(konka1)!.5!(Job)$] {x};
+\path (konka1) edge node[smallr,midway,left] {} (konka2);
+\path (Job) edge node[smallr,midway,left] {} (konka2);
+\node (sel1) [above =of konka2]  {$\selektion{Job=JNR}$};
+\path (konka2) edge node[smallr,midway,left] {} (sel1);
+\node (sel2) [above =of sel1]  {$\selektion{PNR=Bewerber}$};
+\path (sel1) edge node[smallr,midway,left] {} (sel2);
+\node (sel3) [above =of sel2]  {$\selektion{Titel=DJ}$};
+\path (sel2) edge node[smallr,midway,left] {} (sel3);
+\node (proj) [above =of sel3]  {$\projektion{Geburtsdattum}$};
+\path (sel3) edge node[smallr,midway,left] {} (proj);
+
+
+%\node (Buch) {Buch};
+%\node (selektion1) [above=of Buch] {$\selektion{Seitenzahl>200 \land Verlag = Fischer}$};
+%\path (selektion1) edge node[smallr,midway,left] {} (Buch);
+%\node (Person) [right=25mm of selektion1] {Person};
+%\node (join1) [above=20mm of $(selektion1)!.5!(Person)$] {$\verbund{Buch.Titel=Person.Lieblingsbuch}$};
+%\path (selektion1) edge node[smallr,near start,above right] {} (join1);
+%\path (Person) edge node[smalll,near start,above left] {} (join1);
+%\node (projektion) [above=of join1] {$\projektion{Vorname, Nachname, Titel}$};
+%\path (join1) edge node[smallr,midway,left] {} (projektion);
+\end{tikzpicture}
+\newpage
+Optimierung:\\
+\begin{tikzpicture}
+\node (Person) {Person};
+\node (Bewerbung) [right=10mm of Person] {Bewerbung};
+\node (konka1) [above=20mm of $(Person)!.5!(Bewerbung)$] {x};
+\path (Person) edge node[smallr,midway,left] {} (konka1);
+\path (Bewerbung) edge node[smallr,midway,left] {} (konka1);
+\node (sel2) [above =of konka1]  {$\selektion{PNR=Bewerber}$};
+\path (konka1) edge node[smallr,midway,left] {} (sel2);
+\node (Job) [right=20mm of konka1] {Job};
+\node (sel3) [above =of Job]  {$\selektion{Titel=DJ}$};
+\path (Job) edge node[smallr,midway,left] {} (sel3);
+\node (konka2) [above=20mm of $(sel2)!.5!(sel3)$] {x};
+\path (sel2) edge node[smallr,midway,left] {} (konka2);
+\path (sel3) edge node[smallr,midway,left] {} (konka2);
+\node (sel1) [above =of konka2]  {$\selektion{Job=JNR}$};
+\path (konka2) edge node[smallr,midway,left] {} (sel1);
+
+
+\node (proj) [above =of sel1]  {$\projektion{Geburtsdattum}$};
+\path (sel1) edge node[smallr,midway,left] {} (proj);
+\end{tikzpicture}
+\newpage
+\item[] b)\\
+  \begin{tikzpicture}
+    \node (Person) {Person};
+    \node (Bewerbung) [left=25mm of Person] {Bewerbung};
+    \node (produkt1) [above=20mm of $(Person)!.5!(Bewerbung)$] { x };
+    \node (Job) [right=25mm of produkt1] {Job};
+    \node (produkt2) [above=20mm of $(produkt1)!.5!(Job)$] { x };
+    \node (selektion1) [above=of produkt2] {$\selektion{Job=\wert{JNR}}$};
+    \node (selektion2) [above=of selektion1] {$\selektion{PNR=\wert{Bewerber}}$};
+    \node (selektion3) [above=of selektion2] {$\selektion{Titel=\wert{"DJ"}}$};
+    \node (projektion) [above=of selektion3] {$\projektion{Geburtsdatum}$};
+    \node (final) [above=of projektion] {};
+
+    \path (Person) edge node[smallr,near start,above right] {100 Tupel\\5 Attribute} (produkt1);
+    \path (Bewerbung) edge node[smalll,near start,above left] {340 Tupel\\3 Attribute} (produkt1);
+    \path (produkt1) edge node[smalll,near start,above left] {34 000 Tupel\\8 Attribute} (produkt2);
+    \path (Job) edge node[smallr,near start,above right] {20 Tupel \\3 Attribute} (produkt2);
+    \path (produkt2) edge node[smallr,near start,above left] {680 000 Tupel\\11 Attribute} (selektion1);
+    \path (selektion1) edge node[smallr,midway,left] {$100 \cdot\frac{340}{20}= 1700$ Tupel\\10 Attribute} (selektion2);
+    \path (selektion2) edge node[smallr,midway,left] {$20 \cdot \frac{1700}{100}=340$ Tupel\\9 Attribute} (selektion3);
+    \path (selektion3) edge node[smallr,midway,left] {$\cdot\frac{340}{17}=20$ Tupel\\8 Attribute} (projektion);
+    \path (projektion) edge node[smallr,midway,left] {$20$ Tupel\\1 Attribut} (final);
+  \end{tikzpicture}
+\end{enumerate}
+\end{document}

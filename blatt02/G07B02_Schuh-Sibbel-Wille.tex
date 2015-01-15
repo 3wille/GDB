@@ -1,0 +1,280 @@
+\documentclass[ngerman]{gdb-aufgabenblatt}
+
+
+\renewcommand{\Aufgabenblatt}{2}
+\renewcommand{\Ausgabedatum}{Mi. 29.10.2014}
+\renewcommand{\Abgabedatum}{Fr. 14.11.2014}
+\renewcommand{\Gruppe}{Schuh, Sibbel, Wille}
+
+
+\begin{document}
+
+\section{Informationsmodellierung mit dem Entity-Relationship-
+Modell}
+
+%\begin{center}
+%\begin{tikzpicture}
+%\node[entity] (e1) {E1}
+%\end{tikzpicture
+%\end{center}
+
+
+%\section{Beispiel für ER-Diagramm}
+
+\begin{center}
+\begin{tikzpicture}
+
+\node[entity] (tier){Tier};
+\node[attribut] (tier-a1) [above right=1cm and 5mm of tier.east] {\underline{Name}} edge (tier);
+\node[attribut] (tier-a2) [right=1cm of tier.east] {\underline{\dashuline{Tierart Bezeichnung}}} edge (tier);
+
+\node[entity] (ga)[left=1cm of tier] {Gattung};
+\node[attribut] (ga-a1) [above left =5mm and 4mm of ga.north] {\underline{Gattungs Bezeichnung}} edge (ga);
+\node[attribut] (ga-a2)  [left=5mm of ga.west] {Beschreibung} edge (ga);
+
+\node[entity] (ti) [below left=3cm and 1cm of ga.south]  {Tierart};
+\node[attribut] (ti-a1) [above left=1cm and 3cm of ti.north] {Lebenserwartung} edge (ti);
+\node[attribut] (ti-a2) [left=1cm of ti.west] {\underline{Tierart Bezeichnung}} edge (ti);
+\node[attribut] (ti-a1) [below left=1cm and 5mm of ti.west] {Beschreibung} edge (ti);
+
+\node[relationship] (gati) [below left=1cm and 2cm of ga.south] {gehört an};
+\path (gati) edge node[at end,anchor=north] {$n$} (ga);
+\path (gati) edge node[at end,anchor=south] {$1$} (ti);
+
+\node[relationship] (tierart) [below left=1cm and 3cm of tier.south ] {gehört an};
+\path (tierart) edge node[at end,anchor=north] {$1$} (tier);
+\path (tierart) edge node[at end,anchor=south] {$n$} (ti);
+
+\node[relationship] (eltern) [above left =1cm and 1cm of tier.north ] {Eltern};
+\path (eltern) edge node[at end,anchor=south] {$n$} (tier);
+%\path (eltern) edge node[at end,anchor=west] {$n$} (tier);
+\draw[double distance=2pt] (eltern) -- node[at end,anchor=east] {$n$} (tier);
+
+\node[entity] (kaefig) [below right =3cm and 3cm of tier.south ] {Käfig};
+\node[attribut] (kaefig-a1) [below right=1cm and 5mm of kaefig.south] {\underline{KID}} edge (kaefig);
+\node[attribut] (kaefig-a2) [right=1cm of kaefig.east] {Fläche} edge (kaefig);
+
+\node[relationship] (lebt) [above left =1cm and 1cm of kaefig.north ] {lebt in};
+\path (lebt) edge node[at end,anchor=north] {$1$} (tier);
+\path (lebt) edge node[at end,anchor=south] {$n$} (kaefig);
+
+\node[entity] (pfleger) [below left =5cm and 1cm of kaefig.south ] {Pfleger};
+\node[attribut] (pfleger-a1) [below right=1cm and 5mm of pfleger.south] {\underline{SozNr}} edge (pfleger);
+%\node[attribut] (pfleger-a2) [right=1cm of pfleger.east] {Fläche} edge (pfleger);
+\node[attribut] (pfleger-a3) [left=1cm  of pfleger.west] {Vorname} edge (pfleger);
+\node[attribut] (pfleger-a4) [below left=1cm and 1cm of pfleger.south] {Nachname} edge (pfleger);
+
+\node[relationship] (lebt) [above right =1cm and 1cm of pfleger.north ] {kümmert sich um};
+\path (lebt) edge node[at end,anchor=south] {$n$} (pfleger);
+\path (lebt) edge node[at end,anchor=north] {$1$} (kaefig);
+
+\node[relationship] (lebt) [above right =1cm and 1cm of pfleger.north ] {kümmert sich um};
+\path (lebt) edge node[at end,anchor=south] {$n$} (pfleger);
+\path (lebt) edge node[at end,anchor=north] {$1$} (kaefig);
+
+\node[entity] (tat) [above left= 2cm and 5cm of pfleger.west ] {Tätigkeit};
+\node[attribut] (tat-a1) [below left=1cm and 2cm of tat.south] {\underline{TID}} edge (tat);
+\node[attribut] (tat-a2) [left=1cm of tat.west] {Dauer} edge (tat);
+\node[attribut] (tat-a3) [below=1cm of tat.south] {Beschreibung} edge (tat);
+%\node[attribut] (tat-a3) [above left =1cm and 1cm of tat.north] {\dashuline{Pfleger}} edge (tat);Fläche
+%\node[attribut] (tat-a4) [right=5mm of tat.east] {\dashuline{Tier}} edge (tat);
+%\node[attribut] (tat-a5) [below right=1cm and 5mm of tat.east] {Datum} edge (tat);
+
+\node[entity] (pfvo) [above  left= 3cm and 15mm of pfleger.north ] {Pflegevorgang} edge [erbt] (tat);
+\node[attribut] (pfvo-a1) [below left=1cm and 5mm of pfvo.south] {\dashuline{Pfleger}} edge (pfvo);
+\node[attribut] (pfvo-a2) [above right=1cm and 5mm of pfvo.east] {\dashuline{Tier}} edge (pfvo);
+\node[attribut] (pfvo-a3) [right=1cm of pfvo.east] {Datum} edge (pfvo);
+
+\node[relationship] (hat getan) [above left =1cm and 1cm of pfleger.north ] {hat getan};
+\path (hat getan) edge node[at end,anchor=south] {$n$} (pfleger);
+\path (hat getan) edge node[at end,anchor=north] {$m$} (pfvo);
+
+\node[relationship] (durchan) [above =1cm of pfvo.north ] {durchgeführt an};
+\path (durchan) edge node[at end,anchor=south] {$n$} (pfvo);
+\path (durchan) edge node[at end,anchor=north] {$1$} (tier);
+
+
+%\node[multivalentattribut] (e1-a3)  [right=5mm of e1] {A3} edge (e1);
+%
+%\node[entity] (ti) {Tierart};
+%\node[attribut] (ti-a1) [above left =5mm and 4mm of ti.north] {\underline{Bezeichnung}} edge (ti);
+%\node[attribut] (ti-a2)  [above right=5mm and 4mm of ti.north] {Beschreibung} edge (t);
+
+%\node[entity] (e3)      [below right=1cm and 1mm of e1.south] {E3} edge [erbt] (e1);
+%\node[entity] (e4) [right =7cm of e3] {E4};
+
+%\node[weakentity] (e5) [below =3cm of ti] {E5};
+%\node[attribut] (e5-a1)  [right=5mm of e5] {\dashuline{A1}} edge (e5);
+%
+%\node[relationship] (r1) [right=2cm of e3] {R1};
+%\path (r1) edge node[at end,anchor=north west] {$[0;2]$} (e3);
+%\path (r1) edge node[at end,anchor=north east] {$[7;9]$} (e4);
+%
+%
+%\node[weakrelationship] (r2) [below=1cm of e3] {R2};
+%\path (r2) edge node[at end,anchor=north west] {$1$} (e3);
+%\draw[double distance=2pt] (r2) -- node[at end,anchor=south east] {$8$} (e5);
+%
+%
+
+\end{tikzpicture}
+\end{center}
+
+\section{Informationsmodellierung: Beschreibung von ER-Modellen}
+
+\begin{enumerate}
+\item
+\begin{enumerate}
+\item 
+\begin{itemize}
+\item Zuhörer und Erzähler sind Personen mit einem eindeutigen Vor- und Nachnamen.
+\item Ein Zuhörer kann beliebig vielen Erzählern zuhören.
+\item Ein Erzähler erz\"ahlt beliebig vielen Zuh\"orern mindestens einen Witz.
+\item Ein Witz enthält eine oder mehrere Pointen, die aber nur vermittelt werden kann, wenn ein Witz erzählt wird.
+
+\end{itemize}
+\item
+\begin{itemize}
+\item Minimal kann ein Erzähler einem Zuhörer keinmal einen Witz erzählen.
+\item Maximal kann ein Erzähler einem Zuhörer uendliche viele Witze erzählen bwz. so viele wie er kennt.
+\end{itemize}
+\item
+\begin{itemize}
+\item Durch die abgebildete Erweiterung lässt sich darstellen welchen eindeutigen Namen der Witz hat und welchen Inhalt dieser hat.
+\item Der Witz kann beliebig oft erzählt werden.
+\item Ein Erzähler kann beliebig viele Witze mit verschiedenen Inhalten erzählen.
+\end{itemize}
+\end{enumerate}
+\item
+\begin{itemize}
+\item Eine Stra{\ss}e hat einen eindeutigen Namen.
+\item In der Stra{\ss}e können beliebig vile Häuser stehen, jedes Haus jedoch nur in einer Stra{\ss}e und auch nur wenn es eine Stra{\ss}e gibt.
+\item Jedes Haus hat eine Hausnummer, die sich von anderen Hausnummern in der gleichen Stra{\ss}e unterscheidet.
+\end{itemize}
+\end{enumerate}
+
+\section{Schlüsselkandidaten}
+\begin{enumerate}
+\item
+Zur Erläuterung von Eindeutigkeit und Minimalität: wenn beispielweise zum Geburtsdatum ein weiteres Attribut als Schlüsselkandidat gewählt wird, ist mit Wegfallen des anderen Attributs die Bedingungen der Minimalität verletzt, da der Schlüssel immer noch eindeutig ist, oder durch Wegfallen des Geburtsdatum der Schlüssel nicht mehr eindeutig bzw. der zuerst genannte Fall zutrifft.\\
+Mögliche Schlüsselkandidaten:
+\begin{itemize}
+\item Vorname
+\item Geburtsdatum
+\item Telefonnr.
+\end{itemize}
+Diese drei Attribute sind einzelnd als Schlüssel im Bezug auf die Tabelle eindeutig und minimal. Alle anderen Attribute sind nicht eindeutig und Attributkombinationen sind in dem Kontext nicht minimal. \\
+Die Attributkombination (Vorname, Nachname) ist kein Schlüsselkandidat, da durch wegfallen des Nachnamens des Schlüssel immer noch eindeutig ist und die Kombination somit nicht minimal ist.\\
+
+\item
+Es gestaltet sich schwierig, da gerade Attribute wie Namen und Geburtsdaten gleich sein können. Selbst Telefonnummern können sich bei Wohngemeinschaften und Familien überschneiden. Um tatsächlich eindeutige Schlüssel unter den bereits vorhandenen Attributen zu finden, muss man längere Schlüsselkombinationen nutzen. Mögliche Kombination hier für ist (Vorname, Nachname, Geburtsdatum, Geburtsort). Es ist höchst unwahrscheinlich, dass zwei Personen mit selben Namen am selben Tag Geburtstag haben und am selben Ort geboren wurden.\\
+Die einfachste eindeutige Lösung wäre eine Matrikelnummer einzuführen, die jedem Studenten bei der Immatrikulation von der Universität zugewiesen wird.\\
+
+\end{enumerate}
+
+%
+%
+%
+%
+%
+%\section{Beispiel für relationales Datenbankschema}
+%
+%\begin{RMSchma}
+%Person(\soliduline{PID}, Name, Vorname)
+%
+%Haustier(\soliduline{HID}, Name, Rasse, \dashuline{Herrchen $\rightarrow$ Person.PID})
+%\end{RMSchma}
+%
+%
+%
+%
+%
+%
+%\section{Beispiel für Ausdruck der Relationenalgebra}
+%
+%\begin{align*}
+% &\projektion{Rasse, Geschlecht}((Wolf\verbund{Wolf.WID=Haustier.HID} (\selektion{Name=\wert{Hasso}}Haustiere)) \natverbund Person)
+%\\  &=\{ \wert{Steppenwolf}, \wert{m} \}
+%\end{align*}
+%
+%
+%
+%
+%\newpage
+%\section{Beispiel für SQL-Anfrage}
+%
+%\begin{verbatim}
+%SELECT 
+%  h.Name,
+%  h.Rasse
+%FROM 
+%  Haustier h,
+%  Person p
+%WHERE
+%  h.Herrchen = p.PID AND
+%  p.Vorname LIKE "P%"
+%\end{verbatim}
+%
+%
+%
+%
+%
+%
+%
+%
+%\section{Beispiel für Operatorbaum}
+%
+%\begin{tikzpicture}
+%\node (Haustier) {Haustier};
+%\node (Wolf) [left=25mm of Haustier] {Wolf};
+%\node (join1) [above=20mm of $(Haustier)!.5!(Wolf)$] {$\verbund{Wolf.WID=Haustier.HID}$};
+%\node (selektion1) [above=of join1] {$\selektion{Name=\wert{Hasso}}$};
+%\node (projektion) [above=of selektion1] {$\projektion{Rasse}$};
+%\node (final) [above=of projektion] {};
+%
+%\path (Haustier) edge node[smallr,near start,above right] {?? Tupel\\?? Attribute} (join1);
+%\path (Wolf) edge node[smalll,near start,above left] {?? Tupel\\?? Attribute} (join1);
+%\path (join1) edge node[smallr,near start,above left] {?? Tupel\\?? Attribute} (selektion1);
+%\path (selektion1) edge node[smallr,midway,left] {$??\cdot\frac{??}{??}=??$ Tupel\\?? Attribute} (projektion);
+%\path (projektion) edge node[smallr,midway,left] {$??$ Tupel\\1 Attribut} (final);
+%\end{tikzpicture}
+%
+%
+%
+%
+%
+%
+%
+%\section{Beispiel für Tabelle mit Sperranforderungen}
+%
+%\begin{tabular}{|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{1cm}|p{1cm}|p{1cm}|p{3cm}|}
+%\hline
+%Zeitschritt & T\ts{1} & T\ts{2} & T\ts{3} & x & y & z & Bemerkung\\
+%\hline
+%\hline
+%0 &  &  &  & NL & NL & NL & \\
+%\hline
+%1 & lock(x,X) &  &  & X\ts{1} & NL & NL & \\
+%\hline
+%2 & write(x) & lock(y,R) &  & X\ts{1} & R\ts{2} & NL & \\
+%\hline
+%3 &  &  &  &  &  &  & \\
+%\hline
+%4 &  &  &  &  &  &  & \\
+%\hline
+%5 &  &  &  &  &  &  & \\
+%\hline
+%\end{tabular}
+%
+%
+%
+%\section{*Thema*}
+%
+%*Lösung*
+
+
+
+
+
+
+\end{document}
